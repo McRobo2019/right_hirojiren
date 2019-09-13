@@ -89,7 +89,10 @@ void Judgment::run() {
 
 
 
-    target_velocity = 100;
+    //    target_velocity = 100;//koko
+    target_velocity = 150;//koko 01
+    //target_velocity = 180;//koko 02 too fast
+    //target_velocity = 230;//koko 03 too fast
     //    target_omega    = gNavi->target_omega;
     target_omega = gLine_Trace->line_trace_omega(LINE_VAL, mRef_Omega, mMax_Omega, mMin_Omega);
   }
