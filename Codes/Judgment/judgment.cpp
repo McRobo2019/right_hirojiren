@@ -63,17 +63,8 @@ void Judgment::run() {
   //  float yaw_time;
 
   static float ref_odo;
-  //  static float ref_angle;
-  /*
-  static float dif_odo;
-
-  static int   ref_forward;
-  static float acl_forward;
-  */
   static int ref_clock;
 
-
-  //  LINE_VAL = 50; //for debug
   ave_line_val = gAve_line_val->average_500(LINE_VAL);
   ave_yaw_angle_500 = gAve_yaw_angle_500->average_500(YAW_ANGLE);
 
@@ -81,21 +72,32 @@ void Judgment::run() {
   if(DRIVE_MODE == LINE_TRACE){
     line_trace_mode = true;
 
-    //    gNavi->run(LINE_VAL, ODO, (int)mVelocity, YAW_ANGLE, X_POS, Y_POS, PRE_X_POS, PRE_Y_POS);
-
     mMin_Omega      = RAD_45_DEG;
     mRef_Omega      = 0.0;
     mMax_Omega      = MINUS_RAD_45_DEG;
 
-
-
-    //    target_velocity = 100;//koko
     target_velocity = 150;//koko 01
-    //target_velocity = 180;//koko 02 too fast
-    //target_velocity = 230;//koko 03 too fast
-    //    target_omega    = gNavi->target_omega;
-    target_omega = gLine_Trace->line_trace_omega(LINE_VAL, mRef_Omega, mMax_Omega, mMin_Omega);
+    target_omega    = gLine_Trace->line_trace_omega(LINE_VAL, mRef_Omega, mMax_Omega, mMin_Omega);
+
+
+    if(X_POS > 2100){
+      if(Y_POS < -150){
+	if(mGreen_flag){
+	  lost_line = true;
+	}
+      }
+      if(Y_POS < -1200){
+	target_velocity = 0;//koko 01
+	target_omega    = 0.0;
+      }
+      
+      if(lost_line){
+	target_velocity = 50;
+	target_omega    = gNavi->omega_frm_vector(2365.0, -1200.0, X_POS,Y_POS, YAW_ANGLE, (int)mVelocity);
+      }
+    }
   }
+
   else if(DRIVE_MODE == TRACK){
 
     /*
